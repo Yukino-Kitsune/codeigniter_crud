@@ -1,0 +1,14 @@
+.header{
+    outline: #000000;
+    outline-style: solid;
+    outline-width: thin;
+    font-size: large;
+}
+.table td{
+    text-align: center;
+}
+.create-btn{
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
