@@ -15,9 +15,9 @@
 10. Пользоваться Github. Вся реализация в ветке develop. После этого Pull request в ветку main(master).
 
 ## Что использовал:
- - PHP 8.1.9 + Composer
- - MySQL 8.0.32
- - Laravel
+ - PHP
+ - CodeIgniter - php-фреймворк
+ - MySQL
  - Bootstrap
 
 ## Задачи:
@@ -59,6 +59,13 @@
 ![](./misc/db_diagram.png)
 
 ```dbml
+Table users{
+  id integer [primary key]
+  username varchar
+  password varchar
+  isAdmin boolean
+}
+
 Table students{
   id integer [primary key]
   name varchar
