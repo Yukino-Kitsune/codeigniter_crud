@@ -1,12 +1,9 @@
-<?php
-
-if (isset($_SESSION['msg'])) {
-    echo $_SESSION['msg'];
-    # TODO create alert
-    unset($_SESSION['msg']);
-}
-?>
 <div class="container">
+<?php
+if ($session->has('msg')):?>
+    <h3 class="alert <?=$session->get('msg_type');?> text-center"><?=$session->get('msg');?></h3>
+<?php $session->remove('msg');
+endif?>
     <h2 class="text-center">Таблица Студентов</h2>
     <a class="btn btn-primary create-btn" href="<?= site_url('/students/create'); ?>">Создать</a>
     <div class="box-table mx-auto">

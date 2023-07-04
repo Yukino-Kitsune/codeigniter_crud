@@ -3,11 +3,11 @@
     <form action="<?= site_url('/students/store'); ?>" method="POST">
         <div class="mb-3">
             <label for="surname" class="form-label">Фамилия</label>
-            <input type="text" class="form-control" id="surname" name="surname">
+            <input type="text" class="form-control" id="surname" name="surname" required maxlength="16">
         </div>
         <div class="mb-3">
             <label for="name" class="form-label">Имя</label>
-            <input type="text" class="form-control" id="name" name="name">
+            <input type="text" class="form-control" id="name" name="name" required maxlength="16">
         </div>
         <div>
             <label for="group_id">Группа</label>
