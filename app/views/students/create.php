@@ -1,6 +1,6 @@
 <div class="container">
     <h2 class="text-center">Добавление студента</h2>
-    <form action="<?= site_url('/students/store') ?>" method="POST">
+    <form action="<?= site_url('/students/store');?>" method="POST">
         <div class="mb-3">
             <label for="surname" class="form-label">Фамилия</label>
             <input type="text" class="form-control" id="surname" name="surname">

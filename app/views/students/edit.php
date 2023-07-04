@@ -1,16 +1,16 @@
 <div class="container">
     <h2 class="text-center">Изменение студента</h2>
-    <form action="<?= site_url('/students/update') ?>" method="POST">
+    <form action="<?= site_url('/students/update');?>" method="POST">
         <div class="mb-3">
-            <input type="text" hidden="hidden" class="form-control" id="id" name="id" value="<?php echo $data['id'];?>"> <!-- TODO Добавить ограничения -->
+            <input type="text" hidden="hidden" class="form-control" id="id" name="id" value="<?= $data['id'];?>"> <!-- TODO Добавить ограничения -->
         </div>
         <div class="mb-3">
             <label for="surname" class="form-label">Фамилия</label>
-            <input type="text" aria-valuetext="" class="form-control" id="surname" name="surname" value="<?php echo $data['surname'];?>">
+            <input type="text" aria-valuetext="" class="form-control" id="surname" name="surname" value="<?= $data['surname'];?>">
         </div>
         <div class="mb-3">
             <label for="name" class="form-label">Имя</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php echo $data['name'];?>"> <!-- TODO Добавить ограничения -->
+            <input type="text" class="form-control" id="name" name="name" value="<?= $data['name'];?>"> <!-- TODO Добавить ограничения -->
         </div>
         <div>
             <label for="group_id">Группа</label>

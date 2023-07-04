@@ -7,7 +7,7 @@ if (isset($_SESSION['msg'])) {
 ?>
 <div class="container">
         <h2 class="text-center">Таблица Студентов</h2>
-        <a class="btn btn-primary create-btn" href="/students/create">Создать</a> <!-- TODO add href -->
+        <a class="btn btn-primary create-btn" href="<?= site_url('/students/create');?>">Создать</a>
         <div class="box-table mx-auto">
         <table class="table table-hover table-bordered w-100">
             <thead>
@@ -28,8 +28,8 @@ if (isset($_SESSION['msg'])) {
                     <th scope="row"><?= $student['name']; ?></th>
                     <th scope="row"><?= $student['group_name']; ?></th>
                     <th scope="row">
-                        <a class="btn btn-success" href="<?php echo base_url('students/edit/'.$student['id'])?>">Изменить</a>
-                        <a class="btn btn-danger" href="<?php echo base_url('students/delete/'.$student['id'])?>">Удалить</a>
+                        <a class="btn btn-success" href="<?= site_url('students/edit/'.$student['id'])?>">Изменить</a>
+                        <a class="btn btn-danger" href="<?= site_url('students/delete/'.$student['id'])?>">Удалить</a>
                     </th>
                 </tr>
 <?php endforeach;?>
