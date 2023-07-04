@@ -12,45 +12,34 @@ class Students extends Model
 
     protected $allowedFields = ['name', 'surname', 'group_id'];
 
+
+
     public static function getAll(){
-        $db = db_connect();
-//        $query = 'select id, name, surname, group_name from `students` join `groups` on students.group_id = `groups`.group_id;';
-        $query = 'select id, name, surname, group_name, students.group_id from students join `groups`
-                    on students.group_id = `groups`.group_id;';
-        $result = $db->query($query);
-        return $result->getResult('array');
+        $obj = new Students();
+        return $obj->select('id, name, surname, group_name, students.group_id')
+                        ->join('groups', 'students.group_id = `groups`.group_id')->findAll();
     }
 
     public static function getOne($id){
-        $db = db_connect();
-        $query = sprintf('select id, name, surname, group_name, students.group_id from students join `groups`
-                    on students.group_id = `groups`.group_id where id = %d', $id);
-        $result = $db->query($query);
-        return $result->getRowArray();
+        $obj = new Students();
+        return $obj->find($id);
     }
 
-    public static function insertOne($data){ # INFO insertOne потому что insert уже определен в BaseModel и я не могу его переопределить
-        $db = db_connect();
-        $query = sprintf('insert into `students` (name, surname, group_id) values("%s", "%s", "%d");',
-                            $data['name'], $data['surname'], $data['group_id']);
-        $result = $db->query($query);
-        if($result == false) return false;
-        return true;
+    public static function insertOne($data){
+        $obj = new Students();
+        $obj->insert($data);
+        return $obj;
     }
 
-    public static function updateOne($data){ # INFO То же самое, что и с insertOne
-        $db = db_connect();
-        $query = sprintf('update `students` set name = "%s", surname = "%s", group_id = %d where id = %d;', $data['name'], $data['surname'], $data['group_id'], $data['id']);
-        $result = $db->query($query);
-        if($result == false) return false;
-        return true;
+    public static function updateOne($data){
+        $obj = new Students();
+        $obj->update($data['id'], array_slice($data, 1)); # TODO переделать
+        return $obj;
     }
 
-    public static function deleteOne($id){ # INFO То же самое
-        $db = db_connect();
-        $query = sprintf('DELETE FROM `students` WHERE id = %d;', $id);
-        $result = $db->query($query);
-        if($result == false) return false;
-        return true;
+    public static function deleteOne($id){
+        $obj = new Students();
+        $obj->delete($id);
+        return $obj;
     }
 }
