@@ -23,6 +23,19 @@
         </ul>
     </div>
     <div class="right">
-        <a class="btn btn-primary" href="/auth">Войти</a>
+        <ul class="list-inline ms-3 mb-0">
+    <?php if($session->has('username')):?>
+            <li class="list-inline-item">
+                <p><?= $session->get('username')?>, </p>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary" href="<?= site_url('/users/logout'); ?>">Выйти</a>
+            </li>
+        <?php else:?>
+            <li class="list-inline-item">
+                <a class="btn btn-primary" href="/">Войти</a>
+            </li>
+        <?php endif;?>
+        </ul>
     </div>
 </div>

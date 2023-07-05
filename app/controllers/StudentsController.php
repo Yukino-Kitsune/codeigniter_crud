@@ -14,6 +14,7 @@ class StudentsController extends BaseController
         $data['content'] = 'students/index';
         $data['data'] = Students::getAll();
         $data['session'] = $this->session;
+        $data['isAdmin'] = $this->session->get('isAdmin'); # TODO Может быть в какой-то момент в сессии не будет этого поля, возможно нужна проверка
         return view('includes/template', $data);
     }
 
@@ -58,12 +59,12 @@ class StudentsController extends BaseController
 
     public function update()
     {
-        $data['id'] = $this->request->getPost('id');
+        $id = $this->request->getPost('id');
         $data['name'] = $this->request->getPost('name');
         $data['surname'] = $this->request->getPost('surname');
         $data['group_id'] = $this->request->getPost('group_id');
         $obj = new Students();
-        $result = $obj->update($data['id'], array_slice($data, 1)); # TODO переделать
+        $result = $obj->update($id, $data);
 //        if (!$result) {
 //            $this->session->set(['msg' => 'fail']);
 //        }

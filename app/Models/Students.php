@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class Students extends Model
 {
-    # TODO Пока не понятно, зачем нужны эти поля. Вроде как они используются при работе с бд по-другому.
     protected $table = 'students';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
