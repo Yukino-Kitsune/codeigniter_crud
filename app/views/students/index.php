@@ -6,15 +6,17 @@ if ($session->has('msg')):?>
     $session->remove('msg_type');
 endif?>
     <h2 class="text-center">Таблица Студентов</h2>
+    <?php if($isAdmin):?>
     <a class="btn btn-primary create-btn" href="<?= site_url('/students/create'); ?>">Создать</a>
+    <?php endif;?>
     <div class="box-table mx-auto">
         <table class="table table-hover table-bordered w-100">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Имя</th>
-                <th scope="col">Группа</th>
+                <th scope="col" onclick="sortTable(0)">#</th>
+                <th scope="col" onclick="sortTable(1)">Фамилия</th>
+                <th scope="col" onclick="sortTable(2)">Имя</th>
+                <th scope="col" onclick="sortTable(3)">Группа</th>
                 <?php if($isAdmin):?>
                 <th scope="col">Действия</th>
                 <?php endif;?>

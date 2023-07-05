@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container student-form">
     <h2 class="text-center">Добавление студента</h2>
     <form action="<?= site_url('/students/store'); ?>" method="POST">
         <div class="mb-3">
@@ -19,6 +19,6 @@
                 endforeach ?>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Подтвердить</button>
+        <button type="submit" class="btn btn-primary btn-confirm">Подтвердить</button>
     </form>
 </div>

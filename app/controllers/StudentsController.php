@@ -23,6 +23,7 @@ class StudentsController extends BaseController
         $data['title'] = 'Создание студента';
         $data['content'] = 'students/create';
         $data['data'] = Groups::getAll();
+        $data['session'] = $this->session;
         return view('includes/template', $data);
     }
 
@@ -54,6 +55,7 @@ class StudentsController extends BaseController
         $data['title'] = 'Изменение студента';
         $data['content'] = 'students/edit';
         $data['groups'] = Groups::getAll();
+        $data['session'] = $this->session;
         return view('includes/template', $data);
     }
 

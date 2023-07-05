@@ -19,8 +19,16 @@
 }
 input:valid {
     border-color: green;
+    border-width: 2px;
 }
 
 input:invalid {
     border-color: red;
+    border-width: 2px;
+}
+.student-form{
+    width: 350px;
+}
+.btn-confirm{
+    margin-top: 25px;
 }
