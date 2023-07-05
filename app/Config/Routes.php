@@ -45,6 +45,14 @@ $routes->get('students/edit/(:num)', 'StudentsController::edit/$1');
 $routes->post('students/update', 'StudentsController::update');
 $routes->get('students/delete/(:num)', 'StudentsController::delete/$1');
 
+$routes->get('teachers', 'TeachersController::index');
+$routes->get('teachers/create', 'TeachersController::create');
+$routes->post('teachers/store', 'TeachersController::store');
+$routes->get('teachers/edit/(:num)', 'TeachersController::edit/$1');
+$routes->post('teachers/update', 'TeachersController::update');
+$routes->get('teachers/delete/(:num)', 'TeachersController::delete/$1');
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
