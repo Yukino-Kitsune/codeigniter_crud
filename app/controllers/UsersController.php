@@ -66,7 +66,7 @@ class UsersController extends BaseController
         $adminPassword = $this->request->getPost('admin_password');
         $data['isAdmin'] = $adminPassword == getenv('adminPassword') ? 1 : 0;
         # TODO не очень нравится условие. Пока не знаю как по-другому проверить.
-        if(strlen($adminPassword) > 0 && $data['isAdmin'])
+        if(mb_strlen($adminPassword) > 0 && $data['isAdmin'])
         {
             $this->session->set([
                 'msg' => 'Ошибка! Неверный пароль администратора',
