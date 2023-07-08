@@ -37,20 +37,25 @@ $routes->get('users/reg', 'UsersController::reg');
 $routes->post('users/store', 'UsersController::store');
 $routes->get('users/logout', 'UsersController::logout');
 
+$routes->group('students', ['filter' => 'authFilter'], static function ($routes)
+{
+    $routes->get('/', 'StudentsController::index');
+    $routes->get('create', 'StudentsController::create');
+    $routes->post('store', 'StudentsController::store');
+    $routes->get('edit/(:num)', 'StudentsController::edit/$1');
+    $routes->post('update', 'StudentsController::update');
+    $routes->get('delete/(:num)', 'StudentsController::delete/$1');
+});
 
-$routes->get('students', 'StudentsController::index');
-$routes->get('students/create', 'StudentsController::create');
-$routes->post('students/store', 'StudentsController::store');
-$routes->get('students/edit/(:num)', 'StudentsController::edit/$1');
-$routes->post('students/update', 'StudentsController::update');
-$routes->get('students/delete/(:num)', 'StudentsController::delete/$1');
-
-$routes->get('teachers', 'TeachersController::index');
-$routes->get('teachers/create', 'TeachersController::create');
-$routes->post('teachers/store', 'TeachersController::store');
-$routes->get('teachers/edit/(:num)', 'TeachersController::edit/$1');
-$routes->post('teachers/update', 'TeachersController::update');
-$routes->get('teachers/delete/(:num)', 'TeachersController::delete/$1');
+$routes->group('teachers', ['filter' => 'authFilter'], static function ($routes)
+{
+    $routes->get('/', 'TeachersController::index');
+    $routes->get('create', 'TeachersController::create');
+    $routes->post('store', 'TeachersController::store');
+    $routes->get('edit/(:num)', 'TeachersController::edit/$1');
+    $routes->post('update', 'TeachersController::update');
+    $routes->get('delete/(:num)', 'TeachersController::delete/$1');
+});
 
 
 /*

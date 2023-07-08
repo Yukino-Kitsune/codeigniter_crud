@@ -31,10 +31,6 @@
             <li class="list-inline-item">
                 <a class="btn btn-primary" href="<?= site_url('/users/logout'); ?>">Выйти</a>
             </li>
-        <?php else:?>
-            <li class="list-inline-item">
-                <a class="btn btn-primary" href="/">Войти</a>
-            </li>
         <?php endif;?>
         </ul>
     </div>
