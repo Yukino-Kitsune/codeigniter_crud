@@ -4,17 +4,18 @@ namespace App\Controllers;
 
 use App\Models\Groups;
 use App\Models\Students;
-use CodeIgniter\Controller;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class StudentsController extends BaseController
 {
+
     public function index()
     {
         $data['title'] = 'Студенты';
         $data['content'] = 'students/index';
         $data['data'] = Students::getAll();
         $data['session'] = $this->session;
-        $data['isAdmin'] = $this->session->get('isAdmin'); # TODO Может быть в какой-то момент в сессии не будет этого поля, возможно нужна проверка
+        $data['isAdmin'] = $this->session->get('isAdmin');
         return view('includes/template', $data);
     }
 
@@ -22,7 +23,7 @@ class StudentsController extends BaseController
     {
         $data['title'] = 'Создание студента';
         $data['content'] = 'students/create';
-        $data['data'] = Groups::getAll();
+        $data['data'] = Groups::getAll(); # TODO Заменить
         $data['session'] = $this->session;
         return view('includes/template', $data);
     }
@@ -33,10 +34,16 @@ class StudentsController extends BaseController
         $data['surname'] = $this->request->getPost('surname');
         $data['group_id'] =$this->request->getPost('group_id');
         $obj = new Students();
-        $result = $obj->insert($data); # TODO Проверить, что будет, если неудача
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        try {
+            $obj->insert($data);
+        } catch (DatabaseException $e)
+        {
+            $this->session->set([
+                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg_type' => 'alert-danger'
+            ]);
+            return $this->response->redirect(site_url('/students'));
+        }
         return $this->response->redirect(site_url('/students'));
     }
 
@@ -66,20 +73,23 @@ class StudentsController extends BaseController
         $data['surname'] = $this->request->getPost('surname');
         $data['group_id'] = $this->request->getPost('group_id');
         $obj = new Students();
-        $result = $obj->update($id, $data);
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        try {
+            $obj->update($id, $data);
+        } catch (DatabaseException $e)
+        {
+            $this->session->set([
+                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg_type' => 'alert-danger'
+            ]);
+            return $this->response->redirect(site_url('/students'));
+        }
         return $this->response->redirect(site_url('/students'));
     }
 
     public function delete(int $id)
     {
         $obj = new Students();
-        $result = $obj->delete($id);
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        $obj->delete($id); # INFO Интересно, что бд не вызывает исключение если удалять несуществующий id
         return $this->response->redirect(site_url('/students'));
     }
 }

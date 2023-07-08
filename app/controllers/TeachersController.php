@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Teachers;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class TeachersController extends BaseController
 {
@@ -30,10 +31,16 @@ class TeachersController extends BaseController
         $data['name'] = $this->request->getPost('name');
         $data['surname'] = $this->request->getPost('surname');
         $obj = new Teachers();
-        $result = $obj->insert($data);
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        try {
+            $obj->insert($data);
+        } catch (DatabaseException $e)
+        {
+            $this->session->set([
+                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg_type' => 'alert-danger'
+            ]);
+            return $this->response->redirect(site_url('/students'));
+        }
         return $this->response->redirect(site_url('/teachers'));
     }
 
@@ -61,20 +68,23 @@ class TeachersController extends BaseController
         $data['name'] = $this->request->getPost('name');
         $data['surname'] = $this->request->getPost('surname');
         $obj = new Teachers();
-        $result = $obj->update($id, $data);
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        try {
+            $obj->update($id, $data);
+        } catch (DatabaseException $e)
+        {
+            $this->session->set([
+                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg_type' => 'alert-danger'
+            ]);
+            return $this->response->redirect(site_url('/students'));
+        }
         return $this->response->redirect(site_url('/teachers'));
     }
 
     public function delete(int $id)
     {
         $obj = new Teachers();
-        $result = $obj->delete($id);
-//        if (!$result) {
-//            $this->session->set(['msg' => 'fail']);
-//        }
+        $obj->delete($id);
         return $this->response->redirect(site_url('/teachers'));
     }
 
