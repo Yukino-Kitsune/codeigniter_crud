@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Users;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class UsersController extends BaseController
 {
@@ -66,15 +67,26 @@ class UsersController extends BaseController
         $adminPassword = $this->request->getPost('admin_password');
         $data['isAdmin'] = $adminPassword == getenv('adminPassword') ? 1 : 0;
         # TODO не очень нравится условие. Пока не знаю как по-другому проверить.
-        if(mb_strlen($adminPassword) > 0 && $data['isAdmin'])
+        if(mb_strlen($adminPassword) > 0 && !$data['isAdmin'])
         {
             $this->session->set([
                 'msg' => 'Ошибка! Неверный пароль администратора',
                 'msg_type' => 'alert-danger'
             ]);
+            return $this->response->redirect(site_url('/users/reg'));
         }
-        $result = $obj->insert($data);
-        print $result;
+        try {
+            $obj->insert($data);
+        } catch (DatabaseException $e)
+        {
+            if($e->getCode() == 1062) {
+                $this->session->set([
+                    'msg' => 'Ошибка! Пользователь уже существует',
+                    'msg_type' => 'alert-danger'
+                ]);
+                return $this->response->redirect(site_url('/users/reg'));
+            }
+        }
         return $this->response->redirect(site_url('/'));
     }
 }

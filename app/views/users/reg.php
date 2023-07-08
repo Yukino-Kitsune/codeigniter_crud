@@ -1,4 +1,9 @@
     <div class="container auth">
+        <?php
+        if ($session->has('msg')):?>
+            <h3 class="alert <?=$session->get('msg_type');?> text-center"><?=$session->get('msg');?></h3>
+            <?php $session->remove('msg');
+        endif?>
         <h2 class="text-center">Регистрация</h2>
         <form action="<?= site_url('/users/store'); ?>" method="POST">
             <div class="mb-3">
