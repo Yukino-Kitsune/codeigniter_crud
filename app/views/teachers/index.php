@@ -10,12 +10,12 @@
         <a class="btn btn-primary create-btn" href="<?= site_url('/teachers/create'); ?>">Создать</a>
     <?php endif;?>
     <div class="box-table mx-auto">
-        <table class="table table-hover table-bordered w-auto mx-auto">
+        <table class="table table_sort table-hover table-bordered w-auto mx-auto">
             <thead>
             <tr>
-                <th scope="col" onclick="sortTable(0)">#</th>
-                <th scope="col" onclick="sortTable(1)">Фамилия</th>
-                <th scope="col" onclick="sortTable(2)">Имя</th>
+                <th scope="col">#</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
                 <?php if($isAdmin):?>
                     <th scope="col">Действия</th>
                 <?php endif;?>
