@@ -1,0 +1,34 @@
+.header{
+    outline: #000000;
+    outline-style: solid;
+    outline-width: thin;
+    font-size: large;
+}
+.table td{
+    text-align: center;
+}
+.create-btn{
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+.auth{
+    width: 275px;
+}
+.alert{
+    margin-top: 25px;
+}
+input:valid {
+    border-color: green;
+    border-width: 2px;
+}
+
+input:invalid {
+    border-color: red;
+    border-width: 2px;
+}
+.student-form{
+    width: 350px;
+}
+.btn-confirm{
+    margin-top: 25px;
+}
