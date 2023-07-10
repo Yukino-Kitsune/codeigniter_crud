@@ -61,6 +61,7 @@ $routes->group('subjects', ['filter' => 'authFilter'], static function($routes)
 {
     $routes->get('/', 'SubjectsController::index');
     $routes->post('update', 'SubjectsController::update');
+    $routes->get('delete/(:num)', 'SubjectsController::delete/$1');
 });
 
 /*

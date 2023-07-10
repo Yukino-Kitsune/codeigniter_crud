@@ -28,23 +28,27 @@ class SubjectsController extends BaseController
     public function update()
     {
         $id = $this->request->getPost('id');
-        $data['name'] = $this->request->getPost('subject_name');
-        $data['surname'] = $this->request->getPost('surname');
-        $data['group_id'] = $this->request->getPost('group_id');
-        $kek = json_decode($this->request->getBody(), true);
+        $data['subject_name'] = $this->request->getPost('subject_name');
+        $data['teacher_id'] = $this->request->getPost('teacher_id');
 
-        $obj = new Students();
+        $obj = new Subjects();
         try {
             $obj->update($id, $data);
         } catch (DatabaseException $e)
         {
-            $this->session->set([
-                'msg' => 'Ошибка!'.$e->getMessage(),
-                'msg_type' => 'alert-danger'
-            ]);
-            return $this->response->redirect(site_url('/students'));
+            $result['msg'] = $e->getMessage();
+            return $this->response->setJSON($data);
         }
-        return $this->response->redirect(site_url('/students'));
+        $result['msg'] = 'success';
+        return $this->response->setJSON($result);
+    }
+
+    public function delete(int $id)
+    {
+        $obj = new Subjects();
+        $obj->delete($id); # INFO Интересно, что бд не вызывает исключение если удалять несуществующий id
+        $result['msg'] = 'success';
+        return $this->response->setJSON($result);
     }
 
 }

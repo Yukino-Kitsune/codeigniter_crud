@@ -45,29 +45,35 @@
                             saveButton.textContent = 'Сохранить';
                             saveButton.hidden = true;
                             saveButton.addEventListener('click', function () {
-                                var updatedSubject = {
-                                    id: subject.id,
-                                    subject_name: subjectNameCell.querySelector('input').value,
-                                    teacher: teacherCell.querySelector('select').selectedOptions[0].value,
-                                };
+                                var updatedSubject = new URLSearchParams();
+                                updatedSubject.set('id', subject.id);
+                                updatedSubject.set('subject_name', subjectNameCell.querySelector('input').value);
+                                updatedSubject.set('teacher_id', teacherCell.querySelector('select').selectedOptions[0].value);
                                 fetch('/subjects/update',{
                                     method: 'POST',
                                     headers: {
-                                        "Content-Type": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded",
                                         "X-Requested-With": "XMLHttpRequest"
                                     },
-                                    body: JSON.stringify(updatedSubject)
+                                    body: updatedSubject
                                 })
                                     .then(response => response.json())
                                     .then(data => {
-
+                                        if(data['msg'] !== 'success') {
+                                            var alert = document.createElement('h3')
+                                            alert.classList.add('alert', 'alert-danger', 'text-center');
+                                            alert.textContent = 'Ошибка!';
+                                            var cont = document.getElementById('container');
+                                            cont.insertAdjacentElement('afterbegin', alert);
+                                            return;
+                                        }
+                                        editButton.hidden = false;
+                                        deleteButton.hidden = false;
+                                        saveButton.hidden = true;
+                                        subjectNameCell.textContent = updatedSubject.subject_name;
+                                        teacherCell.textContent = teacherCell.querySelector('select').selectedOptions[0].text;
                                     });
-                                console.log('Save subject:', updatedSubject); // TODO remove
-                                editButton.hidden = false;
-                                deleteButton.hidden = false;
-                                saveButton.hidden = true;
-                                subjectNameCell.textContent = updatedSubject.subject_name;
-                                teacherCell.textContent = teacherCell.querySelector('select').selectedOptions[0].text;
+
                             });
                             actionCell.appendChild(saveButton);
 
@@ -75,8 +81,6 @@
                             editButton.classList.add('btn', 'btn-success');
                             editButton.textContent = 'Изменить';
                             editButton.addEventListener('click', function () {
-                                console.log('edit: ', subject); // TODO remove
-                                console.log(row); // TODO remove
                                 subjectNameCell.innerHTML = '<input type="text" class="form-control" value="' + subject.subject_name + '">';
                                 fetch('/teachers', {
                                     method: 'GET',
@@ -91,17 +95,13 @@
                                         select.classList.add('form-select');
                                         data.forEach(teacher => {
                                             var option = document.createElement('option')
-                                            console.log(subject.teacher_id == teacher.id);
-                                            if(subject.teacher_id == teacher.id){
-                                                option.selected = true;
-                                            }
                                             option.value = teacher.id;
                                             option.textContent = teacher.surname + ' ' + teacher.name;
                                             select.appendChild(option);
-                                            teacherCell.innerHTML = '';
-                                            teacherCell.appendChild(select);
-                                            console.log(teacherCell.querySelector('select').selectedOptions[0].value);
                                         });
+                                        select.value = subject.teacher_id;
+                                        teacherCell.innerHTML = '';
+                                        teacherCell.appendChild(select);
                                     });
                                 editButton.hidden = true;
                                 deleteButton.hidden = true;
@@ -113,7 +113,22 @@
                             deleteButton.classList.add('btn', 'btn-danger');
                             deleteButton.textContent = 'Удалить';
                             deleteButton.addEventListener('click', function () {
-                                console.log('delete: ', subject);
+                                var deleteId = new URLSearchParams();
+                                deleteId.set('id', subject.teacher_id);
+                                fetch('/subjects/delete/'+subject.teacher_id,{
+                                    method: 'GET',
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "X-Requested-With": "XMLHttpRequest"
+                                    }
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if(data['msg'] === 'success'){
+                                            row.innerHTML = '';
+                                        }
+
+                                    });
                             });
                             actionCell.appendChild(deleteButton);
                         }
@@ -129,7 +144,7 @@
         loadSubjects();
     });
 </script>
-<div class="container">
+<div class="container" id="container">
     <?php
     if ($session->has('msg')):?>
         <h3 class="alert <?=$session->get('msg_type');?> text-center"><?=$session->get('msg');?></h3>
