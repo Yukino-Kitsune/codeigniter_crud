@@ -13,6 +13,88 @@
                 .then(data => {
                     var tableBody = document.getElementById('subjectsTable');
 
+                    var createButton = document.createElement('button');
+                    createButton.classList.add('btn', 'btn-primary');
+                    createButton.textContent = 'Создать';
+                    createButton.addEventListener('click', function () {
+                        var row = document.createElement('tr');
+                        var idCell = document.createElement('th');
+                        idCell.scope = 'row';
+                        var subjectNameCell = document.createElement('th');
+                        subjectNameCell.scope = 'row';
+                        var teacherCell = document.createElement('th');
+                        teacherCell.scope = 'row';
+                        var actionCell = document.createElement('th');
+                        actionCell.scope = 'row';
+
+                        subjectNameCell.innerHTML = '<input type="text" class="form-control" value="">';
+                        fetch('/teachers', {
+                            method: 'GET',
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                var select = document.createElement('select');
+                                select.classList.add('form-select');
+                                data.forEach(teacher => {
+                                    var option = document.createElement('option')
+                                    option.value = teacher.id;
+                                    option.textContent = teacher.surname + ' ' + teacher.name;
+                                    select.appendChild(option);
+                                });
+                                teacherCell.innerHTML = ''; // TODO mb useless
+                                teacherCell.appendChild(select);
+                            });
+
+                        var storeButton = document.createElement('button');
+                        storeButton.classList.add('btn','btn-success');
+                        storeButton.textContent = 'Подтвердить';
+                        storeButton.addEventListener('click', function () {
+                            var createdSubject = new URLSearchParams();
+                            createdSubject.set('subject_name', subjectNameCell.querySelector('input').value);
+                            createdSubject.set('teacher_id', teacherCell.querySelector('select').selectedOptions[0].value);
+                            console.log('created', createdSubject); // TODO remove
+                            fetch('/subjects/store',{
+                                method: 'POST',
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded",
+                                    "X-Requested-With": "XMLHttpRequest"
+                                },
+                                body: createdSubject
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if(data['msg'] !== 'success') {
+                                        var alert = document.createElement('h3')
+                                        alert.classList.add('alert', 'alert-danger', 'text-center');
+                                        alert.textContent = 'Ошибка!';
+                                        var cont = document.getElementById('container'); // TODO переделать в одну строку
+                                        cont.insertAdjacentElement('afterbegin', alert);
+                                        return;
+                                    }
+                                    // editButton.hidden = false;
+                                    // deleteButton.hidden = false;
+                                    // saveButton.hidden = true;
+                                    idCell.textContent = data['id'];
+                                    subjectNameCell.textContent = createdSubject.get('subject_name');
+                                    teacherCell.textContent = teacherCell.querySelector('select').selectedOptions[0].text;
+                                });
+
+                        });
+
+                        actionCell.appendChild(storeButton);
+
+                        row.appendChild(idCell);
+                        row.appendChild(subjectNameCell);
+                        row.appendChild(teacherCell);
+                        row.appendChild(actionCell);
+                        tableBody.insertAdjacentElement('afterbegin', row);
+                        // document.getElementsByClassName('table table-sort')[0].insertAdjacentElement('afterbegin', row);
+                    });
+                    document.getElementsByClassName('table')[0].insertAdjacentElement('beforebegin', createButton);
                     // Очищаем содержимое таблицы
                     tableBody.innerHTML = '';
 
@@ -30,6 +112,7 @@
                         subjectNameCell.textContent = subject.subject_name;
                         teacherCell.textContent = subject.surname + ' ' + subject.name;
                         teacherCell.id = subject.teacher_id;
+
 
                         row.appendChild(idCell);
                         row.appendChild(subjectNameCell);
@@ -63,7 +146,7 @@
                                             var alert = document.createElement('h3')
                                             alert.classList.add('alert', 'alert-danger', 'text-center');
                                             alert.textContent = 'Ошибка!';
-                                            var cont = document.getElementById('container');
+                                            var cont = document.getElementById('container'); // TODO переделать в одну строку
                                             cont.insertAdjacentElement('afterbegin', alert);
                                             return;
                                         }
@@ -113,9 +196,7 @@
                             deleteButton.classList.add('btn', 'btn-danger');
                             deleteButton.textContent = 'Удалить';
                             deleteButton.addEventListener('click', function () {
-                                var deleteId = new URLSearchParams();
-                                deleteId.set('id', subject.teacher_id);
-                                fetch('/subjects/delete/'+subject.teacher_id,{
+                                fetch('/subjects/delete/'+subject.id,{
                                     method: 'GET',
                                     headers: {
                                         "Content-Type": "application/json",
