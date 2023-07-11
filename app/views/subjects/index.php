@@ -1,8 +1,7 @@
 <script src="/js/SubjectsCrud.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let crud = new SubjectsCrud();
-        crud.generateTable();
+        initCrud();
     });
 </script>
 <div class="container" id="container">

@@ -1,13 +1,24 @@
-class SubjectsCrud{
 
-    isAdmin = false;
-    records;
-    tableBody;
-    constructor(){
-        this.tableBody = document.getElementById('subjectsTable');
+    let isAdmin = false;
+    let tableBody;
+
+    function initCrud(){
+        let table = document.getElementsByClassName('table')[0];
+        let createBtn = createButton('create', 'btn-primary', 'Создать', createAction);
+        table.insertAdjacentElement('beforebegin', createBtn);
+
+
+        tableBody = document.getElementById('subjectsTable');
+        getAll().then(records =>{
+            tableBody.innerHTML = '';
+            records.forEach(record => {
+                createRow(record);
+            });
+        });
     }
 
-    async getAll(){
+    async function getAll() {
+        let records;
         await fetch('/subjects',
             {
                 method: "get",
@@ -18,16 +29,34 @@ class SubjectsCrud{
             })
             .then(response => response.json())
             .then(data => {
-                if(data['isAdmin'] == 1)
-                    this.isAdmin = true;
-                this.records = data['data']; // TODO rename 'data'
+                if (data['isAdmin'] == 1)
+                    isAdmin = true;
+                records = data['data']; // TODO rename 'data'
             })
             .catch(error => {
                 console.error('Request failed:', error);
             });
+        return records;
     }
 
-    createRow(record){
+    async function getTeachers(){
+        let records;
+        await fetch('/teachers',{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {records = data;})
+            .catch(error => {
+                console.log('Failed to load teachers: ', error);
+            })
+        return records;
+    }
+
+    function createRow(record){
         let row = document.createElement('tr');
         let idCell = document.createElement('th');
         idCell.scope = 'row';
@@ -48,18 +77,18 @@ class SubjectsCrud{
         row.appendChild(subjectNameCell);
         row.appendChild(teacherCell);
 
-        if(this.isAdmin){
+        if(isAdmin){
             let actionCell = document.createElement('th');
             actionCell.scope = 'row';
-
-            actionCell.appendChild(SubjectsCrud.createButton('edit', 'btn-success', 'Изменить', this.editAction));
+            actionCell.appendChild(createButton('edit_'+record['id'], 'btn-success', 'Изменить', editAction));
+            actionCell.appendChild(createButton('delete_'+record['id'], 'btn-danger', 'Удалить', () => deleteAction(record['id'])));
 
             row.appendChild(actionCell);
         }
-        this.tableBody.appendChild(row);
+        tableBody.appendChild(row);
     }
 
-    static createButton(id, color_class, title, action){
+    function createButton(id, color_class, title, action){
         let button = document.createElement('button');
         button.classList.add('btn', color_class);
         button.id = id;
@@ -67,31 +96,103 @@ class SubjectsCrud{
         button.addEventListener('click', action);
         return button;
     }
-    generateTable(){
-        this.getAll().then(r =>{
-            this.tableBody.innerHTML = '';
-            this.records.forEach(record => {
-                this.createRow(record);
-            });
-        });
-    }
-    static async getTeachers(){
-        let records;
-        await fetch('/teachers',{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+
+    function createAlert()
+    {
+        let alert = document.createElement('h3')
+        alert.classList.add('alert', 'alert-danger', 'text-center');
+        alert.textContent = 'Ошибка!';
+        let alerts = document.getElementsByClassName('alert');
+        if(alerts.length > 0) {
+            for (const element of alerts) {
+                element.remove();
             }
+        }
+        document.getElementById('container').insertAdjacentElement('afterbegin', alert);
+    }
+
+    async function createAction()
+    {
+        console.log('start');
+        let row = document.createElement('tr');
+        let idCell = document.createElement('th');
+        idCell.scope = 'row';
+        let subjectNameCell = document.createElement('th');
+        subjectNameCell.scope = 'row';
+        let teacherCell = document.createElement('th');
+        teacherCell.scope = 'row';
+        let actionCell = document.createElement('th');
+        actionCell.scope = 'row';
+
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.classList.add('form-control');
+        subjectNameCell.appendChild(input);
+
+        let select = document.createElement('select');
+        let records = await getTeachers();
+        records.forEach(record => {
+           let option = document.createElement('option');
+           option.value = record['id'];
+           option.textContent = record['surname'] + ' ' + record['name'];
+           select.appendChild(option);
+        });
+        teacherCell.appendChild(select);
+
+        let confirmBtn = createButton('confirm', 'btn-success', 'Подтвердить',
+            () => confirmAction(input.value, select.selectedOptions[0].value));
+
+        actionCell.appendChild(confirmBtn);
+
+        row.appendChild(idCell);
+        row.appendChild(subjectNameCell);
+        row.appendChild(teacherCell);
+        row.appendChild(actionCell);
+
+        tableBody.insertAdjacentElement('afterbegin', row);
+    }
+
+    async function confirmAction(subjectName, teacherId){
+        let createdSubject = new URLSearchParams();
+        createdSubject.set('subject_name', subjectName);
+        createdSubject.set('teacher_id', teacherId);
+        await fetch('/subjects/store',{
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: createdSubject
         })
             .then(response => response.json())
-            .then(data => {records = data;})
-            .catch(error => {
-                console.log('Failed to load teachers: ', error);
+            .then(data => {
+                if(data['msg'] !== 'success') {
+                    createAlert();
+                    return;
+                }
+
+                let confirmBtn = document.getElementById('confirm');
+
+                let row = confirmBtn.parentNode.parentNode;
+                let idCell = row.querySelector('th');
+                let subjectNameCell = row.querySelector('th:nth-child(2)');
+                let teacherCell = row.querySelector('th:nth-child(3)');
+                let actionCell = row.querySelector('th:nth-child(4)');
+
+                idCell.textContent = data['id'];
+                subjectNameCell.innerHTML = '';
+                subjectNameCell.textContent = subjectName;
+                let teacher = teacherCell.children[0].selectedOptions[0].textContent;
+                teacherCell.innerHTML = '';
+                teacherCell.textContent = teacher;
+
+                confirmBtn.remove();
+                actionCell.appendChild(createButton('edit_'+data['id'], 'btn-success', 'Изменить', editAction));
+                actionCell.appendChild(createButton('delete_'+data['id'], 'btn-danger', 'Удалить', () => deleteAction(data['id'])));
             })
-        return records;
     }
-    async editAction(){
+
+    async function editAction(){
         let row = this.parentNode.parentNode;
 
         let idCell = row.querySelector('th');
@@ -106,9 +207,8 @@ class SubjectsCrud{
 
         let select = document.createElement('select');
         select.classList.add('form-control');
-        select.id = 'teacherSelect'; // TODO For what?
 
-        let records = await SubjectsCrud.getTeachers(); // TODO тут статик, до этого не статик. ПИЗДЕЦ
+        let records = await getTeachers();
         records.forEach(record => {
             let option = document.createElement('option');
             option.value = record['id'];
@@ -121,14 +221,16 @@ class SubjectsCrud{
         teacherCell.textContent = '';
         teacherCell.appendChild(select);
 
-        let saveButton = SubjectsCrud.createButton('save', 'btn-success', 'Сохранить',
-            () => SubjectsCrud.saveAction(idCell.textContent, input.value, select.selectedOptions[0].value));
-        // console.log(this);
-        this.hidden = true;
+        let saveButton = createButton('save_'+idCell.textContent, 'btn-success', 'Сохранить',
+            () => saveAction(idCell.textContent, input.value, select.selectedOptions[0].value));
+
+        document.getElementById('delete_'+idCell.textContent).hidden = true; // Скрываем кнопки
+        document.getElementById('edit_'+idCell.textContent).hidden = true;
+
         actionCell.appendChild(saveButton);
     }
 
-    static async saveAction(id, subjectName, teacher_id){
+    async function saveAction(id, subjectName, teacher_id){
         let editedSubject = new URLSearchParams();
         editedSubject.set('id', id);
         editedSubject.set('subject_name', subjectName);
@@ -143,10 +245,44 @@ class SubjectsCrud{
         })
             .then(response => response.json())
             .then(data => {
-                console.log(this);
-                console.log('post data: ', data); // TODO add alert
+                if(data['msg'] !== 'success') {
+                    createAlert();
+                    return;
+                }
+            })
+
+        let saveBtn = document.getElementById('save_'+id);
+        let row = saveBtn.parentNode.parentNode;
+        let subjectNameCell = row.querySelector('th:nth-child(2)');
+        let teacherCell = row.querySelector('th:nth-child(3)');
+
+        subjectNameCell.innerHTML = '';
+        subjectNameCell.textContent = subjectName;
+        let teacher = teacherCell.children[0].selectedOptions[0].textContent;
+        teacherCell.innerHTML = '';
+        teacherCell.textContent = teacher;
+
+        saveBtn.remove();
+
+        document.getElementById('edit_'+id).hidden = false; // Показываем кнопку изменить
+        document.getElementById('delete_'+id).hidden = false;
+    }
+
+    async function deleteAction(id){
+        await fetch('/subjects/delete/'+id,{
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data['msg'] === 'success'){
+                    let deleteBtn = document.getElementById('delete_'+id);
+                    let row = deleteBtn.parentNode.parentNode;
+                    row.innerHTML = '';
+                }
             })
     }
 
-
-}
