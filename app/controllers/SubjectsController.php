@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Subjects;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class SubjectsController extends BaseController
 {
@@ -23,6 +24,23 @@ class SubjectsController extends BaseController
             $data['isAdmin'] = $this->session->get('isAdmin');
             return view('includes/template', $data);
         }
+    }
+
+    public function store()
+    {
+        $data['subject_name'] = $this->request->getPost('subject_name');
+        $data['teacher_id'] = $this->request->getPost('teacher_id');
+        $obj = new Subjects();
+        try {
+            $id = $obj->insert($data);
+        } catch (DatabaseException $e)
+        {
+            $result['msg'] = $e->getMessage();
+            return $this->response->setJSON($data);
+        }
+        $result['msg'] = 'success';
+        $result['id'] = $id;
+        return $this->response->setJSON($result);
     }
 
     public function update()
