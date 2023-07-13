@@ -12,7 +12,7 @@
         $session->remove('msg_type');
     endif?>
     <h2 class="text-center">Таблица дисциплин</h2>
-    <div class="box-table mx-auto">
+    <div class="box-table mx-auto d-table">
         <table class="table table_sort table-hover table-bordered w-auto mx-auto">
             <thead>
             <tr>

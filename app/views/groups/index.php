@@ -5,17 +5,16 @@
         <?php $session->remove('msg');
         $session->remove('msg_type');
     endif?>
-    <h2 class="text-center">Таблица преподавателей</h2>
+    <h2 class="text-center">Таблица групп</h2>
     <div class="box-table mx-auto d-table">
         <?php if($isAdmin):?>
-            <a class="btn btn-primary create-btn" href="<?= site_url('/teachers/create'); ?>">Создать</a>
+            <a class="btn btn-primary create-btn" href="<?= site_url('/groups/create'); ?>">Создать</a>
         <?php endif;?>
         <table class="table table_sort table-hover table-bordered w-auto mx-auto">
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Имя</th>
+                <th scope="col">Группа</th>
                 <?php if($isAdmin):?>
                     <th scope="col">Действия</th>
                 <?php endif;?>
@@ -23,17 +22,16 @@
             </thead>
             <tbody>
             <?php
-            foreach ($data as $teacher): ?>
+            foreach ($data as $group): ?>
                 <tr>
-                    <th scope="row"><?= $teacher['id']; ?></th>
-                    <th scope="row"><?= $teacher['surname']; ?></th>
-                    <th scope="row"><?= $teacher['name']; ?></th>
+                    <th scope="row"><?= $group['group_id']; ?></th>
+                    <th scope="row"><?= $group['group_name']; ?></th>
                     <?php if($isAdmin):?>
                         <th scope="row">
                             <a class="btn btn-success"
-                               href="<?= site_url('teachers/edit/' . $teacher['id']) ?>">Изменить</a>
+                               href="<?= site_url('groups/edit/' . $group['group_id']) ?>">Изменить</a>
                             <a class="btn btn-danger"
-                               href="<?= site_url('teachers/delete/' . $teacher['id']) ?>">Удалить</a>
+                               href="<?= site_url('groups/delete/' . $group['group_id']) ?>">Удалить</a>
                         </th>
                     <?php endif;?>
                 </tr>

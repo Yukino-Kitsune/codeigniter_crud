@@ -13,6 +13,7 @@
         if(isAdmin){
             let table = document.getElementsByClassName('table')[0];
             let createBtn = createButton('create', 'btn-primary', 'Создать', createAction);
+            createBtn.classList.add('create-btn');
             table.insertAdjacentElement('beforebegin', createBtn);
         }
     }

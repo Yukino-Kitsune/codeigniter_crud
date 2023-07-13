@@ -65,6 +65,16 @@ $routes->group('subjects', ['filter' => 'authFilter'], static function($routes)
     $routes->post('store', 'SubjectsController::store');
 });
 
+$routes->group('groups', ['filter' => 'authFilter'], static function($routes)
+{
+    $routes->get('/', 'GroupsController::index');
+    $routes->get('create', 'GroupsController::create');
+    $routes->post('store', 'GroupsController::store');
+    $routes->get('edit/(:num)', 'GroupsController::edit/$1');
+    $routes->post('update', 'GroupsController::update');
+    $routes->get('delete/(:num)', 'GroupsController::delete/$1');
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

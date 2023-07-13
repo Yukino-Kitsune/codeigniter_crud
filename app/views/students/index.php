@@ -6,10 +6,10 @@ if ($session->has('msg')):?>
     $session->remove('msg_type');
 endif?>
     <h2 class="text-center">Таблица Студентов</h2>
-    <?php if($isAdmin):?>
-    <a class="btn btn-primary create-btn" href="<?= site_url('/students/create'); ?>">Создать</a>
-    <?php endif;?>
-    <div class="box-table mx-auto">
+    <div class="box-table mx-auto d-table">
+        <?php if($isAdmin):?>
+            <a class="btn btn-primary create-btn" href="<?= site_url('/students/create'); ?>">Создать</a>
+        <?php endif;?>
         <table class="table table_sort table-hover table-bordered w-auto mx-auto">
             <thead>
             <tr>
