@@ -23,7 +23,7 @@ class StudentsController extends BaseController
     {
         $data['title'] = 'Создание студента';
         $data['content'] = 'students/create';
-        $data['data'] = Groups::getAll(); # TODO Заменить
+        $data['data'] = (new Groups())->findAll();
         $data['session'] = $this->session;
         return view('includes/template', $data);
     }
@@ -61,7 +61,7 @@ class StudentsController extends BaseController
         }
         $data['title'] = 'Изменение студента';
         $data['content'] = 'students/edit';
-        $data['groups'] = Groups::getAll();
+        $data['groups'] = (new Groups())->findAll();
         $data['session'] = $this->session;
         return view('includes/template', $data);
     }
