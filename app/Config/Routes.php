@@ -57,6 +57,13 @@ $routes->group('teachers', ['filter' => 'authFilter'], static function ($routes)
     $routes->get('delete/(:num)', 'TeachersController::delete/$1');
 });
 
+$routes->group('subjects', ['filter' => 'authFilter'], static function($routes)
+{
+    $routes->get('/', 'SubjectsController::index');
+    $routes->post('update', 'SubjectsController::update');
+    $routes->get('delete/(:num)', 'SubjectsController::delete/$1');
+    $routes->post('store', 'SubjectsController::store');
+});
 
 /*
  * --------------------------------------------------------------------

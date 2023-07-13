@@ -9,10 +9,15 @@ class TeachersController extends BaseController
 {
     public function index()
     {
+
         $obj = new Teachers();
         $data['title'] = 'Преподаватели';
         $data['content'] = 'teachers/index';
         $data['data'] = $obj->findAll();
+        if($this->request->isAJAX())
+        {
+            return $this->response->setJSON($data['data']);
+        }
         $data['session'] = $this->session;
         $data['isAdmin'] = $this->session->get('isAdmin');
         return view('includes/template', $data);
