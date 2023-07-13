@@ -2,9 +2,9 @@
     let isAdmin = false;
     let tableBody;
 
-    function initCrud(){
+    async function initCrud(){
         tableBody = document.getElementById('subjectsTable');
-        getAll().then(records =>{
+        await getAll().then(records =>{
             tableBody.innerHTML = '';
             records.forEach(record => {
                 createRow(record);
