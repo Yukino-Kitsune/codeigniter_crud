@@ -3,11 +3,6 @@
     let tableBody;
 
     function initCrud(){
-        let table = document.getElementsByClassName('table')[0];
-        let createBtn = createButton('create', 'btn-primary', 'Создать', createAction);
-        table.insertAdjacentElement('beforebegin', createBtn);
-
-
         tableBody = document.getElementById('subjectsTable');
         getAll().then(records =>{
             tableBody.innerHTML = '';
@@ -15,6 +10,11 @@
                 createRow(record);
             });
         });
+        if(isAdmin){
+            let table = document.getElementsByClassName('table')[0];
+            let createBtn = createButton('create', 'btn-primary', 'Создать', createAction);
+            table.insertAdjacentElement('beforebegin', createBtn);
+        }
     }
 
     async function getAll() {
@@ -113,7 +113,6 @@
 
     async function createAction()
     {
-        console.log('start');
         let row = document.createElement('tr');
         let idCell = document.createElement('th');
         idCell.scope = 'row';

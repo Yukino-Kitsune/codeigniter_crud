@@ -28,6 +28,9 @@ class SubjectsController extends BaseController
 
     public function store()
     {
+        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
+            return; # TODO CHECK
+        }
         $data['subject_name'] = $this->request->getPost('subject_name');
         $data['teacher_id'] = $this->request->getPost('teacher_id');
         $obj = new Subjects();
@@ -45,6 +48,9 @@ class SubjectsController extends BaseController
 
     public function update()
     {
+        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
+            return; # TODO CHECK
+        }
         $id = $this->request->getPost('id');
         $data['subject_name'] = $this->request->getPost('subject_name');
         $data['teacher_id'] = $this->request->getPost('teacher_id');
@@ -63,6 +69,9 @@ class SubjectsController extends BaseController
 
     public function delete(int $id)
     {
+        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
+            return; # TODO CHECK
+        }
         $obj = new Subjects();
         $obj->delete($id); # INFO Интересно, что бд не вызывает исключение если удалять несуществующий id
         $result['msg'] = 'success';
