@@ -3,7 +3,7 @@
     <div class="left d-flex">
         <ul class="list-inline ms-3 mb-0">
             <li class="list-inline-item">
-                <p class="mb-0" >CRUD</p>
+                <p class="mb-0">CRUD</p>
             </li>
             <li class="list-inline-item">
                 <a class="nav-link" href="/students">Студенты</a>
@@ -24,14 +24,16 @@
     </div>
     <div class="right">
         <ul class="list-inline ms-3 mb-0">
-    <?php if($session->has('username')):?>
-            <li class="list-inline-item">
-                <p><?= $session->get('username')?>, </p>
-            </li>
-            <li class="list-inline-item">
-                <a class="btn btn-primary" href="<?= site_url('/users/logout'); ?>">Выйти</a>
-            </li>
-        <?php endif;?>
+            <?php
+            if ($session->has('username')): ?>
+                <li class="list-inline-item">
+                    <p><?= $session->get('username') ?>, </p>
+                </li>
+                <li class="list-inline-item">
+                    <a class="btn btn-primary" href="<?= site_url('/users/logout'); ?>">Выйти</a>
+                </li>
+            <?php
+            endif; ?>
         </ul>
     </div>
 </div>

@@ -21,16 +21,14 @@ class UsersController extends BaseController
         $login = $this->request->getPost('login');
         $password = $this->request->getPost('password');
         $result = $obj->where('username', $login)->first();
-        if($result == null)
-        {
+        if ($result == null) {
             $this->session->set([
                 'msg' => 'Ошибка! Пользователь не найден',
                 'msg_type' => 'alert-danger'
             ]);
             return $this->response->redirect(site_url('/'));
         }
-        if(password_verify($password, $result['password']))
-        {
+        if (password_verify($password, $result['password'])) {
             $this->session->set([
                 'msg' => 'Ошибка! Неверный пароль',
                 'msg_type' => 'alert-danger'
@@ -66,9 +64,7 @@ class UsersController extends BaseController
         $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
         $adminPassword = $this->request->getPost('admin_password');
         $data['isAdmin'] = $adminPassword == getenv('adminPassword') ? 1 : 0;
-        # TODO не очень нравится условие. Пока не знаю как по-другому проверить.
-        if(mb_strlen($adminPassword) > 0 && !$data['isAdmin'])
-        {
+        if (mb_strlen($adminPassword) > 0 && !$data['isAdmin']) {
             $this->session->set([
                 'msg' => 'Ошибка! Неверный пароль администратора',
                 'msg_type' => 'alert-danger'
@@ -77,9 +73,8 @@ class UsersController extends BaseController
         }
         try {
             $obj->insert($data);
-        } catch (DatabaseException $e)
-        {
-            if($e->getCode() == 1062) {
+        } catch (DatabaseException $e) {
+            if ($e->getCode() == 1062) {
                 $this->session->set([
                     'msg' => 'Ошибка! Пользователь уже существует',
                     'msg_type' => 'alert-danger'
