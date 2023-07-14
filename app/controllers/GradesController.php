@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\Grades;
 use App\Models\Students;
 use App\Models\Subjects;
 use CodeIgniter\Database\Exceptions\DatabaseException;
+
 class GradesController extends BaseController
 {
     public function index()
@@ -23,6 +25,9 @@ class GradesController extends BaseController
 
     public function create()
     {
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/grades');
+        }
         $data['title'] = 'Создание оценки';
         $data['content'] = 'grades/create';
         $data['subjects'] = (new Subjects())->findAll();
@@ -33,15 +38,17 @@ class GradesController extends BaseController
 
     public function store()
     {
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/grades');
+        }
         $data['grade'] = $this->request->getPost('grade');
         $data['subject_id'] = $this->request->getPost('subject_id');
-        $data['student_id'] =$this->request->getPost('student_id');
+        $data['student_id'] = $this->request->getPost('student_id');
         try {
             (new Grades())->insert($data);
-        } catch (DatabaseException $e)
-        {
+        } catch (DatabaseException $e) {
             $this->session->set([
-                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg' => 'Ошибка!' . $e->getMessage(),
                 'msg_type' => 'alert-danger'
             ]);
             return $this->response->redirect(site_url('/grades'));
@@ -51,9 +58,11 @@ class GradesController extends BaseController
 
     public function edit(int $id)
     {
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/grades');
+        }
         $data['data'] = (new Grades())->find($id);
-        if ($data['data'] == null)
-        {
+        if ($data['data'] == null) {
             $this->session->set([
                 'msg' => 'Ошибка! Оценка не найден',
                 'msg_type' => 'alert-danger'
@@ -70,15 +79,17 @@ class GradesController extends BaseController
 
     public function update()
     {
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/grades');
+        }
         $id = $this->request->getPost('id');
         $data['subject_id'] = $this->request->getPost('subject_id');
         $data['student_id'] = $this->request->getPost('student_id');
         try {
             (new Grades())->update($id, $data);
-        } catch (DatabaseException $e)
-        {
+        } catch (DatabaseException $e) {
             $this->session->set([
-                'msg' => 'Ошибка!'.$e->getMessage(),
+                'msg' => 'Ошибка!' . $e->getMessage(),
                 'msg_type' => 'alert-danger'
             ]);
             return $this->response->redirect(site_url('/grades'));
@@ -88,7 +99,10 @@ class GradesController extends BaseController
 
     public function delete(int $id)
     {
-        (new Grades())->delete($id); # INFO Интересно, что бд не вызывает исключение если удалять несуществующий id
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/grades');
+        }
+        (new Grades())->delete($id);
         return $this->response->redirect(site_url('/grades'));
     }
 }

@@ -9,15 +9,13 @@ class SubjectsController extends BaseController
 {
     public function index()
     {
-        if($this->request->isAJAX())
-        {
+        if ($this->request->isAJAX()) {
             $obj = new Subjects();
             $subjects = $obj->getAll();
-            $data['data'] = $subjects;
+            $data['records'] = $subjects;
             $data['isAdmin'] = $this->session->get('isAdmin');
             return $this->response->setJSON($data);
-        } else
-        {
+        } else {
             $data['title'] = 'Дисциплины';
             $data['content'] = 'subjects/index';
             $data['session'] = $this->session;
@@ -28,16 +26,15 @@ class SubjectsController extends BaseController
 
     public function store()
     {
-        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
-            return; # TODO CHECK
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/subjects');
         }
         $data['subject_name'] = $this->request->getPost('subject_name');
         $data['teacher_id'] = $this->request->getPost('teacher_id');
         $obj = new Subjects();
         try {
             $id = $obj->insert($data);
-        } catch (DatabaseException $e)
-        {
+        } catch (DatabaseException $e) {
             $result['msg'] = $e->getMessage();
             return $this->response->setJSON($data);
         }
@@ -48,8 +45,8 @@ class SubjectsController extends BaseController
 
     public function update()
     {
-        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
-            return; # TODO CHECK
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/subjects');
         }
         $id = $this->request->getPost('id');
         $data['subject_name'] = $this->request->getPost('subject_name');
@@ -58,8 +55,7 @@ class SubjectsController extends BaseController
         $obj = new Subjects();
         try {
             $obj->update($id, $data);
-        } catch (DatabaseException $e)
-        {
+        } catch (DatabaseException $e) {
             $result['msg'] = $e->getMessage();
             return $this->response->setJSON($data);
         }
@@ -69,11 +65,11 @@ class SubjectsController extends BaseController
 
     public function delete(int $id)
     {
-        if($this->session->has('isAdmin') && $this->session->get('isAdmin') == 0) {
-            return; # TODO CHECK
+        if (!$this->session->get('isAdmin')) {
+            return $this->response->redirect('/subjects');
         }
         $obj = new Subjects();
-        $obj->delete($id); # INFO Интересно, что бд не вызывает исключение если удалять несуществующий id
+        $obj->delete($id);
         $result['msg'] = 'success';
         return $this->response->setJSON($result);
     }

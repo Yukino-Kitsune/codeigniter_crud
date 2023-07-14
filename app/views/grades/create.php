@@ -16,7 +16,7 @@
             <select class="form-select" name="student_id" id="student_id" aria-label="Выберите студента">
                 <?php
                 foreach ($students as $student): ?>
-                    <option value="<?= $student['id']; ?>"><?= $student['surname'].' '.$student['name']; ?></option>
+                    <option value="<?= $student['id']; ?>"><?= $student['surname'] . ' ' . $student['name']; ?></option>
                 <?php
                 endforeach ?>
             </select>

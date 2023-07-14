@@ -29,10 +29,12 @@
                 foreach ($students as $student): ?>
                     <?php
                     if ($data['student_id'] == $student['id']): ?>
-                        <option value="<?= $student['id']; ?>" selected><?= $student['surname'].' '.$student['name']; ?></option>
+                        <option value="<?= $student['id']; ?>"
+                                selected><?= $student['surname'] . ' ' . $student['name']; ?></option>
                     <?php
                     else: ?>
-                        <option value="<?= $student['id']; ?>"><?= $student['surname'].' '.$student['name']; ?></option>
+                        <option
+                            value="<?= $student['id']; ?>"><?= $student['surname'] . ' ' . $student['name']; ?></option>
                     <?php
                     endif ?>
                 <?php

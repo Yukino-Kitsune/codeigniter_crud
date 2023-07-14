@@ -1,9 +1,10 @@
 <div class="container auth">
     <?php
     if ($session->has('msg')):?>
-        <h3 class="alert <?=$session->get('msg_type');?> text-center"><?=$session->get('msg');?></h3>
-        <?php $session->remove('msg');
-    endif?>
+        <h3 class="alert <?= $session->get('msg_type'); ?> text-center"><?= $session->get('msg'); ?></h3>
+        <?php
+        $session->remove('msg');
+    endif ?>
     <h1 class="text-center">Авторизация</h1>
     <form action="<?= site_url('/users/login'); ?>" method="POST">
         <div class="mb-3">
